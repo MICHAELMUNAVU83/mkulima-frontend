@@ -1,4 +1,14 @@
 import React, { useState, useEffect } from "react";
+import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import {
+  MainContainer,
+  ChatContainer,
+  MessageList,
+  Message,
+  MessageInput,
+  TypingIndicator,
+} from "@chatscope/chat-ui-kit-react";
+
 import { useParams } from "react-router-dom";
 import { HiDownload } from "react-icons/hi";
 import Planting from "../../components/Farmer/Planting";
@@ -11,12 +21,15 @@ import two from "../images/two.png";
 import three from "../images/three.png";
 import four from "../images/four.png";
 import { jsPDF } from "jspdf";
+import { BiMessageRounded } from "react-icons/bi";
 const EachOfMySelectedCrop = () => {
   const { id } = useParams();
   const [my_selected_crop, setMySelectedCrop] = useState({});
 
   const [stage, setStage] = useState("site selection");
   const [language, setLanguage] = useState("english");
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const API_KEY = process.env.REACT_APP_OPEN_AI_API_KEY;
   useEffect(() => {
     fetch(`http://127.0.0.1:3000/selected_crops/${id}`)
       .then((response) => response.json())
@@ -135,8 +148,129 @@ const EachOfMySelectedCrop = () => {
     doc.save(`${my_selected_crop.jina} mche.pdf`);
   };
 
+  const [isTyping, setIsTyping] = useState(false);
+  const [messages, setMessages] = useState([
+    {
+      message: "Hello I am your assistant. How can I help you?",
+      sender: "ChatBot",
+    },
+  ]);
+
+  const handleSend = async (message) => {
+    const newMessage = {
+      message: message,
+      sender: "user",
+      direction: "outgoing",
+    };
+    const newMessages = [...messages, newMessage];
+    // update message state
+    setMessages(newMessages);
+
+    // set isTyping to true
+    setIsTyping(true);
+
+    //process message to chatgpt
+    await processMessage(newMessages);
+  };
+
+  async function processMessage(messages) {
+    let apiMessages = messages.map((messageObj) => {
+      let role = "";
+      if (messageObj.sender === "ChatBot") {
+        role = "assistant";
+      } else {
+        role = "user";
+      }
+      return {
+        role: role,
+        content: messageObj.message,
+      };
+    });
+    //
+    const systemMessage = {
+      role: "system",
+      content:
+        "Explain all concepts in details with enthusiasm with the urge to help the farmer the answers they need as accurate as possible. Speak as an agricultural officer. give the response in swahili if the question is in swahili. If the question is in english give the response in english.",
+    };
+
+    const apiRequestBody = {
+      model: "gpt-3.5-turbo",
+      messages: [...apiMessages],
+    };
+
+    await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify(apiRequestBody),
+    })
+      .then((data) => {
+        return data.json();
+      })
+      .then((res) => {
+        console.log(res);
+        console.log(res.choices[0].message.content);
+
+        setMessages([
+          ...messages,
+          {
+            message: res.choices[0].message.content,
+            sender: "ChatBot",
+          },
+        ]);
+        setIsTyping(false);
+      });
+  }
+
   return (
     <div className="pt-16 kulim-park">
+      {showOrderModal && (
+        <div className="fixed h-[700px] kulim-park bg-white shadow-xl  my-auto w-[900px] inset-0 bg-opacity z-10 flex flex-col  p-8  mx-auto">
+          <div className="flex justify-end w-full p-4">
+            <button
+              className="bg-[#3B841F] text-white px-4 py-2 rounded-lg"
+              onClick={() => {
+                setShowOrderModal(false);
+              }}
+            >
+              X
+            </button>
+          </div>
+          <div className="p-8">
+            <MainContainer>
+              <ChatContainer>
+                <MessageList
+                  scrollBehavior="smooth"
+                  typingIndicator={
+                    isTyping ? (
+                      <TypingIndicator content="ChatBot is typing" />
+                    ) : null
+                  }
+                >
+                  {messages.map((message, index) => (
+                    <Message className="text-xs" model={message} key={index} />
+                  ))}
+                </MessageList>
+                <MessageInput
+                  placeholder="Type message here"
+                  onSend={handleSend}
+                />
+              </ChatContainer>
+            </MainContainer>
+          </div>
+        </div>
+      )}
+      <div
+        className=" text-[#3B841F] cursor-pointer bg-white p-4 rounded-3xl fixed animate-bounce bottom-0 right-0 m-4"
+        onClick={() => {
+          setShowOrderModal(true);
+        }}
+      >
+        <BiMessageRounded className="text-[#3B841F] " size={70} />
+        <h1>Ai assistant</h1>
+      </div>
       <div>
         {stage === "site selection" && (
           <div className="text-xl font-bold text-center flex justify-center gap-2   text-[#3B841F] md:text-5xl ">
@@ -264,7 +398,10 @@ const EachOfMySelectedCrop = () => {
                       ? "Cost of production"
                       : "Gharama ya uzalishaji"}
                   </p>
-                  <p>{my_selected_crop.cost_of_production_per_acre} {language === "english" ? "Ksh Per acre" : "Ksh Kwa Ekari"}</p>
+                  <p>
+                    {my_selected_crop.cost_of_production_per_acre}{" "}
+                    {language === "english" ? "Ksh Per acre" : "Ksh Kwa Ekari"}
+                  </p>
                 </div>
 
                 <p

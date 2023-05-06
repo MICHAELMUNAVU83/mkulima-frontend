@@ -100,6 +100,7 @@ const AskQuestion = () => {
                   <TypingIndicator content="ChatBot is typing" />
                 ) : null
               }
+              style={{ backgroundColor: "#e6ffe6" }}
             >
               {messages.map((message, index) => (
                 <Message model={message} key={index} />
