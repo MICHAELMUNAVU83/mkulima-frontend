@@ -1,6 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import BudPayCheckout from "../BudPayScript.js";
+
 const InputsForCrop = () => {
+  const [showOrderModal, setShowOrderModal] = useState(false);
+
+  function payWithBudPay(amount) {
+    BudPayCheckout({
+      key: "pk_live_0syy9e7bnjeduyf1wzct57rzyndbphtduo6bop", // Replace with your public key
+      email: "michaelmunavu83@gmail.com",
+      amount: amount,
+      first_name: "Michael",
+      last_name: "Munavu",
+      currency: "KES", // Use GHS for Ghana Cedis or USD for US Dollars
+      reference:
+        "" +
+        Math.floor(Math.random() * 100000000000 + 1) +
+        new Date().getSeconds() +
+        new Date().getMilliseconds(), // generates a pseudo-unique reference. Please replace with a reference you generated. or remove the line entirely so our API will generate one for you
+      callback: function (response) {
+        //this happens after the payment is completed successfully
+        var reference = response.reference;
+        alert(
+          "Payment complete! Reference: " +
+            reference +
+            ", Status: " +
+            response.status
+        );
+      },
+      onClose: function (response) {
+        console.log(response);
+        alert("Transaction was not completed, window closed.");
+      },
+    });
+  }
   const { name } = useParams();
   const [suggested_inputs, setSuggestedInputs] = useState([]);
 
@@ -60,8 +93,13 @@ const InputsForCrop = () => {
             </div>
 
             <div className="flex justify-center">
-              <button className="bg-gray-100 gap-2 px-6 py-4 rounded-xl font-bold text-[#3B841F] my-2 justify-center place-content-center flex text-md">
-                Call To Order
+              <button
+                className="bg-gray-100 gap-2 px-6 py-4 rounded-xl font-bold text-[#3B841F] my-2 justify-center place-content-center flex text-md"
+                onClick={(e) => {
+                  setShowOrderModal(true);
+                }}
+              >
+                Buy Now
               </button>
             </div>
           </div>
@@ -69,6 +107,19 @@ const InputsForCrop = () => {
     );
   return (
     <div className="pt-24 kulim-park">
+      {showOrderModal && (
+        <div className="fixed kulim-park bg-white shadow-xl h-[700px] my-auto w-[900px] inset-0 bg-opacity z-10 flex flex-col items-center justify-center w-[400px]  mx-auto">
+          <div className="flex justify-end w-full p-4">
+            <button
+              className="bg-black text-white px-4 py-2 rounded-lg"
+              onClick={() => setShowOrderModal(false)}
+            >
+              X
+            </button>
+          </div>
+          <div>bnmk,l.;</div>
+        </div>
+      )}
       <h1 className="text-[#3B841F] text-center font-bold text-5xl">
         Planting Inputs for {name}
       </h1>
