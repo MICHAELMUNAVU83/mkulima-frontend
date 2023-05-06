@@ -7,6 +7,7 @@ const InputsForCrop = () => {
   const [selectedInput, setSelectedInput] = useState({});
   const [totalKgs, SetTotalKgs] = useState(1);
   const [totalPrice, SetTotalPrice] = useState(0);
+  const [currency, SetCurrency] = useState("KES");
   function payWithBudPay(e) {
     e.preventDefault();
     BudPayCheckout({
@@ -15,7 +16,7 @@ const InputsForCrop = () => {
       amount: String(totalPrice),
       first_name: "Michael",
       last_name: "Munavu",
-      currency: "KES", // Use GHS for Ghana Cedis or USD for US Dollars
+      currency: currency, // Use GHS for Ghana Cedis or USD for US Dollars
       reference:
         "" +
         Math.floor(Math.random() * 100000000000 + 1) +
@@ -125,7 +126,6 @@ const InputsForCrop = () => {
                 setShowOrderModal(false);
                 SetTotalKgs(1);
                 SetTotalPrice(0);
-
               }}
             >
               X
@@ -178,8 +178,22 @@ const InputsForCrop = () => {
                 <option value="4">Four</option>
               </select>
 
+              <p className="w-[300px] mx-auto">
+                Select the currency you want to pay with
+              </p>
+              <select
+                className="w-[300px] h-[50px] focus:outline-none border border-2 rounded-2xl mx-auto"
+                onChange={(e) => {
+                  SetCurrency(e.target.value);
+                }}
+              >
+                <option value="KES">Kenyan Shillings</option>
+                <option value="USD">US Dollars</option>
+              </select>
+
               <p className="w-[300px] mx-auto text-center">
-                Total price is {totalPrice.toLocaleString()}Ksh for {totalKgs} kgs
+                Total price is {totalPrice.toLocaleString()}Ksh for {totalKgs}{" "}
+                kgs
               </p>
 
               <div className="flex justify-center">
@@ -191,7 +205,6 @@ const InputsForCrop = () => {
                 >
                   Buy Now
                 </button>
-               
               </div>
             </div>
           </div>

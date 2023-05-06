@@ -9,6 +9,7 @@ const InputsForManagement = () => {
   const [selectedInput, setSelectedInput] = useState({});
   const [totalKgs, SetTotalKgs] = useState(1);
   const [totalPrice, SetTotalPrice] = useState(0);
+  const [currency, SetCurrency] = useState("KES");
 
   useEffect(() => {
     SetTotalPrice(Number(totalKgs) * Number(selectedInput.price_per_kg));
@@ -22,7 +23,7 @@ const InputsForManagement = () => {
       amount: String(totalPrice),
       first_name: "Michael",
       last_name: "Munavu",
-      currency: "KES", // Use GHS for Ghana Cedis or USD for US Dollars
+      currency: currency, // Use GHS for Ghana Cedis or USD for US Dollars
       reference:
         "" +
         Math.floor(Math.random() * 100000000000 + 1) +
@@ -176,6 +177,19 @@ const InputsForManagement = () => {
                 <option value="2">Two</option>
                 <option value="3">Three</option>
                 <option value="4">Four</option>
+              </select>
+
+              <p className="w-[300px] mx-auto">
+                Select the currency you want to pay with
+              </p>
+              <select
+                className="w-[300px] h-[50px] focus:outline-none border border-2 rounded-2xl mx-auto"
+                onChange={(e) => {
+                  SetCurrency(e.target.value);
+                }}
+              >
+                <option value="KES">Kenyan Shillings</option>
+                <option value="USD">US Dollars</option>
               </select>
 
               <p className="w-[300px] mx-auto text-center">
