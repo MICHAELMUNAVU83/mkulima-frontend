@@ -67,21 +67,21 @@ const LineChart = () => {
     },
   };
 
-  const labels = ["Maize", "Wheat", "Beans"];
+  const labels = ["Maize", "Wheat", "Beans", "Potatoes", "Tomatoes"];
 
   const data = {
     labels,
     datasets: [
       {
         label: "Number of Planting Inputs In our system",
-        data: plantingInputs.map((input) => input.count),
+        data: ["15", "20", "10", "40", "27"],
 
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
       {
         label: "Number of Management Inputs In our system",
-        data: managementInputs.map((input) => input.count),
+        data: ["80", "15", "49", "25", "30"],
 
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",

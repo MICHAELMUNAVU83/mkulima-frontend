@@ -36,11 +36,11 @@ const RadarChart = () => {
   }, []);
 
   const data = {
-    labels: ["Uasin Gishu", "Kiambu", "Nairobi"],
+    labels: ["Uasin Gishu", "Kiambu", "Nairobi", "Nakuru", "Kisumu"],
     datasets: [
       {
         label: "Average Price per kg that farmers are selling their crops for",
-        data: locations.map((location) => location.average_price_per_kg),
+        data: ["200", "300", "400", "500", "600"],
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,

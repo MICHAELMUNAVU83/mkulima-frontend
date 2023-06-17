@@ -51,7 +51,14 @@ const AreaChat = () => {
     },
   };
 
-  const labels = selectedCrops.map((crop) => crop.name);
+  const labels = [
+    "Maize",
+    "Onions",
+    "Wheat",
+    "Carrots",
+    "Beans",
+    "Kales",
+  ];
 
   const data = {
     labels,
@@ -59,7 +66,7 @@ const AreaChat = () => {
       {
         fill: true,
         label: "Number of selections",
-        data: selectedCrops.map((crop) => crop.count),
+        data: [12, 19, 3, 5, 2, 3],
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },

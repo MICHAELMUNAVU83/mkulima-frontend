@@ -65,19 +65,19 @@ const VerticalBar = () => {
     },
   };
 
-  const labels = ["Uasin Gishu", "Kiambu", "Nairobi"];
+  const labels = ["Uasin Gishu", "Kiambu", "Nairobi", "Nakuru", "Kisumu"];
 
   const data = {
     labels,
     datasets: [
       {
         label: "Number of Sellers of Planting Input supplies per county",
-        data: plantingInputs.map((input) => input.count),
+        data: ["800", "300", "600", "670", "600"],
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
       {
         label: "Number of Sellers of Management Input supplies per county",
-        data: managementInputs.map((input) => input.count),
+        data: ["100", "200", "430", "800", "500"],
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],
